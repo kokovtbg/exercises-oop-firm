@@ -10,7 +10,7 @@ public class P_01_ReadFile {
         try (FileInputStream fis = new FileInputStream(path)) {
             int oneByte = fis.read();
             while (oneByte > -1) {
-                System.out.printf("%d,", oneByte);
+                System.out.printf("%s,", Integer.toBinaryString(oneByte));
                 oneByte = fis.read();
             }
 
