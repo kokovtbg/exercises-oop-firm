@@ -1,5 +1,6 @@
 package bg.sirma.roombooking.service.impl;
 
+import bg.sirma.roombooking.exception.RoomFileNotFoundException;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.service.RoomService;
 import com.google.gson.Gson;
@@ -20,11 +21,15 @@ public class RoomServiceImpl implements RoomService {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Override
-    public Room[] viewRooms() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(basePath + roomsPath));
-        Room[] rooms = gson.fromJson(reader, Room[].class);
-        return Arrays.stream(rooms)
-                .sorted(Comparator.comparing(r -> r.getHotel().getName()))
-                .toArray(Room[]::new);
+    public Room[] viewFreeRooms() throws IOException, RoomFileNotFoundException {
+        try(BufferedReader reader = new BufferedReader(new FileReader(basePath + roomsPath))) {
+            Room[] rooms = gson.fromJson(reader, Room[].class);
+            return Arrays.stream(rooms)
+                    .filter(r -> !r.isBooked())
+                    .sorted(Comparator.comparing(r -> r.getHotel().getName()))
+                    .toArray(Room[]::new);
+        } catch (FileNotFoundException e) {
+            throw new RoomFileNotFoundException("No rooms! Must first create one!");
+        }
     }
 }

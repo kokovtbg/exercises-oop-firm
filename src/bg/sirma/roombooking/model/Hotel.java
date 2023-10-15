@@ -1,21 +1,18 @@
 package bg.sirma.roombooking.model;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Hotel {
     private final long id;
     private String name;
     private User owner;
-    private final Map<Room, Integer> rooms;
+    private final Set<Room> rooms;
 
     public Hotel(long id, String name, User owner) {
         this.id = id;
         this.name = name;
         this.owner = owner;
-        this.rooms = new LinkedHashMap<>();
+        this.rooms = new LinkedHashSet<>();
     }
 
     public long getId() {
@@ -30,15 +27,12 @@ public class Hotel {
         return owner;
     }
 
-    public Map<Room, Integer> getRooms() {
-        return Collections.unmodifiableMap(rooms);
+    public Set<Room> getRooms() {
+        return Collections.unmodifiableSet(rooms);
     }
 
     public void addRoom(Room room) {
-        if (!this.rooms.containsKey(room)) {
-            this.rooms.put(room, 0);
-        }
-        this.rooms.put(room, this.rooms.get(room) + 1);
+        this.rooms.add(room);
     }
 
     @Override
