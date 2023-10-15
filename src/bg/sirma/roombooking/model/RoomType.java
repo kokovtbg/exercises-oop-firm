@@ -3,7 +3,7 @@ package bg.sirma.roombooking.model;
 import java.util.Objects;
 
 public class RoomType {
-    private String name;
+    private final String name;
 
     public RoomType(String name) {
         this.name = name;

@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Room {
-    private static long countRooms = 1;
     private final long id;
     private final int number;
     private final RoomType type;
@@ -15,28 +14,23 @@ public class Room {
     private BigDecimal price;
     private BigDecimal cancellationFee;
     private boolean isBooked;
+    private final Hotel hotel;
 
-    public Room(int number, RoomType type, BigDecimal price, BigDecimal cancellationFee, boolean isBooked) {
-        this.id = countRooms++;
+    public Room(long id,
+                int number,
+                RoomType type,
+                BigDecimal price,
+                BigDecimal cancellationFee,
+                boolean isBooked,
+                Hotel hotel) {
+        this.id = id;
         this.number = number;
         this.type = type;
         this.price = price;
         this.cancellationFee = cancellationFee;
         this.isBooked = isBooked;
+        this.hotel = hotel;
         this.amenities = new LinkedHashSet<>();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Room room = (Room) o;
-        return id == room.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     public long getId() {
@@ -69,5 +63,22 @@ public class Room {
 
     public void addAmenity(Amenity amenity) {
         this.amenities.add(amenity);
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return number == room.number && Objects.equals(hotel, room.hotel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, hotel);
     }
 }
