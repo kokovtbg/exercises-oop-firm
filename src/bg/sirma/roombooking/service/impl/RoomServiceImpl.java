@@ -2,6 +2,7 @@ package bg.sirma.roombooking.service.impl;
 
 import bg.sirma.roombooking.exception.RoomFileNotFoundException;
 import bg.sirma.roombooking.model.Room;
+import bg.sirma.roombooking.model.User;
 import bg.sirma.roombooking.service.RoomService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,7 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -31,5 +32,10 @@ public class RoomServiceImpl implements RoomService {
         } catch (FileNotFoundException e) {
             throw new RoomFileNotFoundException("No rooms! Must first create one!");
         }
+    }
+
+    @Override
+    public void createRoom(User currentUser, int number, String type, BigDecimal price, BigDecimal cancellationFee, String hotelName, List<String> amenities) {
+
     }
 }
