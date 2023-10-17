@@ -1,6 +1,9 @@
 package bg.sirma.roombooking;
 
+import bg.sirma.roombooking.exception.HotelNotFoundException;
 import bg.sirma.roombooking.exception.RoomFileNotFoundException;
+import bg.sirma.roombooking.exception.RoomTypeNotFoundException;
+import bg.sirma.roombooking.exception.UserNotOwnerException;
 import bg.sirma.roombooking.model.Amenity;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.model.User;
@@ -42,7 +45,10 @@ public class Main {
                             roomService.createRoom(currentUser, number, type, price, cancellationFee, hotelName, amenities);
                         }
                     }
-                } catch (RoomFileNotFoundException e) {
+                } catch (RoomFileNotFoundException |
+                         HotelNotFoundException |
+                         UserNotOwnerException |
+                         RoomTypeNotFoundException e) {
                     System.out.println(e.getMessage());
                 }
 

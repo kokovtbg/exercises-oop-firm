@@ -1,6 +1,8 @@
 package bg.sirma.roombooking.model;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class User {
@@ -16,5 +18,32 @@ public class User {
         this.hotels = new LinkedHashSet<>();
     }
 
+    public String getUsername() {
+        return username;
+    }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public Set<Booking> getBookingHistory() {
+        return Collections.unmodifiableSet(bookingHistory);
+    }
+
+    public Set<Hotel> getHotels() {
+        return Collections.unmodifiableSet(hotels);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
 }

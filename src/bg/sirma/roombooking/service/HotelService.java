@@ -8,5 +8,5 @@ import java.io.IOException;
 public interface HotelService {
     Hotel getByName(String name) throws IOException, HotelNotFoundException;
 
-    Hotel[] getAllFromFile() throws IOException;
+    Hotel[] getAllFromFile() throws IOException, HotelNotFoundException;
 }

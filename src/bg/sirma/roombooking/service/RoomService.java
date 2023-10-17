@@ -1,6 +1,9 @@
 package bg.sirma.roombooking.service;
 
+import bg.sirma.roombooking.exception.HotelNotFoundException;
 import bg.sirma.roombooking.exception.RoomFileNotFoundException;
+import bg.sirma.roombooking.exception.RoomTypeNotFoundException;
+import bg.sirma.roombooking.exception.UserNotOwnerException;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.model.User;
 
@@ -11,5 +14,11 @@ import java.util.List;
 public interface RoomService {
     Room[] viewFreeRooms() throws IOException, RoomFileNotFoundException;
 
-    void createRoom(User currentUser, int number, String type, BigDecimal price, BigDecimal cancellationFee, String hotelName, List<String> amenities);
+    void createRoom(User currentUser,
+                    int number,
+                    String type,
+                    BigDecimal price,
+                    BigDecimal cancellationFee,
+                    String hotelName,
+                    List<String> amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException;
 }

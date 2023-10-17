@@ -6,6 +6,7 @@ import bg.sirma.roombooking.service.HotelService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -26,10 +27,11 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public Hotel[] getAllFromFile() throws IOException {
-        Reader reader = Files.newBufferedReader(Path.of(basePath + savedHotelsPath));
-        Hotel[] hotels = gson.fromJson(reader, Hotel[].class);
-        reader.close();
-        return hotels;
+    public Hotel[] getAllFromFile() throws IOException, HotelNotFoundException {
+        try(Reader reader = Files.newBufferedReader(Path.of(basePath + savedHotelsPath))) {
+            return gson.fromJson(reader, Hotel[].class);
+        } catch (FileNotFoundException e) {
+            throw new HotelNotFoundException("There are no hotels still");
+        }
     }
 }
