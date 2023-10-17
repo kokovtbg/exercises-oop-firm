@@ -1,14 +1,15 @@
 package bg.sirma.roombooking;
 
-import bg.sirma.roombooking.exception.HotelNotFoundException;
-import bg.sirma.roombooking.exception.RoomFileNotFoundException;
-import bg.sirma.roombooking.exception.RoomTypeNotFoundException;
-import bg.sirma.roombooking.exception.UserNotOwnerException;
+import bg.sirma.roombooking.exception.*;
 import bg.sirma.roombooking.model.Amenity;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.model.User;
+import bg.sirma.roombooking.service.HotelService;
 import bg.sirma.roombooking.service.RoomService;
+import bg.sirma.roombooking.service.UserService;
+import bg.sirma.roombooking.service.impl.HotelServiceImpl;
 import bg.sirma.roombooking.service.impl.RoomServiceImpl;
+import bg.sirma.roombooking.service.impl.UserServiceImpl;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 public class Main {
     private static final RoomService roomService = new RoomServiceImpl();
+    private static final HotelService hotelService = new HotelServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
     private static User currentUser = null;
 
     public static void main(String[] args) {
@@ -44,11 +47,23 @@ public class Main {
                             List<String> amenities = Arrays.stream(commandData[6].split("\\s*,\\s*")).toList();
                             roomService.createRoom(currentUser, number, type, price, cancellationFee, hotelName, amenities);
                         }
+                        case "CreateHotel" -> {
+                            String hotelName = commandData[1];
+                            hotelService.createHotel(currentUser, hotelName);
+                        }
+                        case "Register" -> {
+                            String username = commandData[1];
+                            String password = commandData[2];
+                            userService.register(username, password);
+                        }
+                        case "Login" -> {
+                            String username = commandData[1];
+                            String password = commandData[2];
+                            currentUser = userService.login(username, password);
+                        }
                     }
-                } catch (RoomFileNotFoundException |
-                         HotelNotFoundException |
-                         UserNotOwnerException |
-                         RoomTypeNotFoundException e) {
+                } catch (RoomFileNotFoundException | HotelNotFoundException | UserNotOwnerException |
+                         RoomTypeNotFoundException | UserNotFoundException e) {
                     System.out.println(e.getMessage());
                 }
 
