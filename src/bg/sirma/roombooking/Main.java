@@ -14,7 +14,6 @@ import bg.sirma.roombooking.service.impl.UserServiceImpl;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -34,9 +33,7 @@ public class Main {
                         case "ViewFreeRooms" -> {
                             Room[] rooms = roomService.viewFreeRooms();
                             Arrays.stream(rooms)
-                                    .forEach(r -> System.out.printf("Hotel: %s, Type: %s, Price: %.2f, Amenities: %s",
-                                            r.getHotel().getName(), r.getType(), r.getPrice(),
-                                            r.getAmenities().stream().map(Amenity::getName).collect(Collectors.joining(", "))));
+                                    .forEach(System.out::println);
                         }
                         case "CreateRoom" -> {
                             int number = Integer.parseInt(commandData[1]);
@@ -44,27 +41,33 @@ public class Main {
                             BigDecimal price = BigDecimal.valueOf(Double.parseDouble(commandData[3]));
                             BigDecimal cancellationFee = BigDecimal.valueOf(Double.parseDouble(commandData[4]));
                             String hotelName = commandData[5];
-                            List<String> amenities = Arrays.stream(commandData[6].split("\\s*,\\s*")).toList();
-                            roomService.createRoom(currentUser, number, type, price, cancellationFee, hotelName, amenities);
+                            String[] amenities = new String[0];
+                            if (commandData.length > 6) {
+                                amenities = Arrays.stream(commandData[6].split("\\s*,\\s*")).toArray(String[]::new);
+                            }
+                            System.out.println(roomService.createRoom(currentUser, number, type, price, cancellationFee, hotelName, amenities));
                         }
                         case "CreateHotel" -> {
                             String hotelName = commandData[1];
-                            hotelService.createHotel(currentUser, hotelName);
+                            System.out.println(hotelService.createHotel(currentUser, hotelName));
                         }
                         case "Register" -> {
                             String username = commandData[1];
                             String password = commandData[2];
-                            userService.register(username, password);
+                            System.out.println(userService.register(username, password) + " successfully created");
                         }
                         case "Login" -> {
                             String username = commandData[1];
                             String password = commandData[2];
                             currentUser = userService.login(username, password);
+                            System.out.printf("Logged in successfully with %s%n", username);
                         }
                     }
                 } catch (RoomFileNotFoundException | HotelNotFoundException | UserNotOwnerException |
-                         RoomTypeNotFoundException | UserNotFoundException e) {
+                         RoomTypeNotFoundException | UserNotFoundException | UserExistException e) {
                     System.out.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Must contain more parameters");
                 }
 
                 line = reader.readLine();

@@ -4,10 +4,8 @@ import bg.sirma.roombooking.exception.HotelNotFoundException;
 import bg.sirma.roombooking.exception.RoomFileNotFoundException;
 import bg.sirma.roombooking.exception.RoomTypeNotFoundException;
 import bg.sirma.roombooking.exception.UserNotOwnerException;
-import bg.sirma.roombooking.model.Hotel;
-import bg.sirma.roombooking.model.Room;
-import bg.sirma.roombooking.model.RoomType;
-import bg.sirma.roombooking.model.User;
+import bg.sirma.roombooking.model.*;
+import bg.sirma.roombooking.service.AmenityService;
 import bg.sirma.roombooking.service.HotelService;
 import bg.sirma.roombooking.service.RoomService;
 import bg.sirma.roombooking.service.RoomTypeService;
@@ -29,6 +27,7 @@ public class RoomServiceImpl implements RoomService {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final HotelService hotelService = new HotelServiceImpl();
     private static final RoomTypeService roomTypeService = new RoomTypeServiceImpl();
+    private static final AmenityService amenityService = new AmenityServiceImpl();
 
     @Override
     public Room[] viewFreeRooms() throws IOException, RoomFileNotFoundException {
@@ -44,13 +43,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void createRoom(User currentUser,
+    public Room createRoom(User currentUser,
                            int number,
                            String type,
                            BigDecimal price,
                            BigDecimal cancellationFee,
                            String hotelName,
-                           List<String> amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException {
+                           String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException {
         Hotel hotel = hotelService.getByName(hotelName);
         if (!currentUser.equals(hotel.getOwner())) {
             throw new UserNotOwnerException(String.format("You are not owner of hotel with name %s", hotelName));
@@ -80,6 +79,10 @@ public class RoomServiceImpl implements RoomService {
         }
 
         Room room = new Room(lastRoomId, number, roomTypeInDB, price, cancellationFee, false, hotel);
+        Amenity[] amenitiesFromFile = amenityService.getAllFromFile();
+        Arrays.stream(amenitiesFromFile)
+                .filter(amenity -> Arrays.stream(amenities).toList().contains(amenity.getName()))
+                .forEach(room::addAmenity);
         Writer writer = Files.newBufferedWriter(Path.of(basePath + roomsPath));
         gson.toJson(room, writer);
         writer.close();
@@ -88,5 +91,7 @@ public class RoomServiceImpl implements RoomService {
         writer = Files.newBufferedWriter(Path.of(basePath + hotelsPath));
         gson.toJson(hotel, writer);
         writer.close();
+
+        return room;
     }
 }

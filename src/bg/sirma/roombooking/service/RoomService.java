@@ -14,11 +14,11 @@ import java.util.List;
 public interface RoomService {
     Room[] viewFreeRooms() throws IOException, RoomFileNotFoundException;
 
-    void createRoom(User currentUser,
+    Room createRoom(User currentUser,
                     int number,
                     String type,
                     BigDecimal price,
                     BigDecimal cancellationFee,
                     String hotelName,
-                    List<String> amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException;
+                    String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException;
 }

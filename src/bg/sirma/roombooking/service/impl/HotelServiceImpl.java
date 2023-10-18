@@ -14,12 +14,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
 public class HotelServiceImpl implements HotelService {
-    private static final String basePath = "src/bg/sirma/roombooking/resources/json/";
-    private static final String savedHotelsPath = "savedFiles/hotels.json";
+    private static final String basePath = "src/bg/sirma/roombooking/resources/json/savedFiles/";
+    private static final String savedHotelsPath = "hotels.json";
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Override
     public Hotel getByName(String name) throws IOException, HotelNotFoundException {
@@ -34,15 +35,15 @@ public class HotelServiceImpl implements HotelService {
     public Hotel[] getAllFromFile() throws IOException, HotelNotFoundException {
         try(Reader reader = Files.newBufferedReader(Path.of(basePath + savedHotelsPath))) {
             return gson.fromJson(reader, Hotel[].class);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | NoSuchFileException e) {
             throw new HotelNotFoundException("There are no hotels still");
         }
     }
 
     @Override
-    public void createHotel(User currentUser, String hotelName) throws IOException, UserNotFoundException {
+    public Hotel createHotel(User currentUser, String hotelName) throws IOException, UserNotFoundException {
         if (currentUser == null) {
-            throw new UserNotFoundException("Invalid user");
+            throw new UserNotFoundException("You must first login");
         }
 
         long lastHotelId = 0;
@@ -66,5 +67,6 @@ public class HotelServiceImpl implements HotelService {
         Writer writer = Files.newBufferedWriter(Path.of(basePath + savedHotelsPath));
         gson.toJson(hotel, writer);
         writer.close();
+        return hotel;
     }
 }

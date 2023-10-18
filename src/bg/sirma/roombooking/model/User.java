@@ -8,8 +8,8 @@ import java.util.Set;
 public class User {
     private String username;
     private String password;
-    private Set<Booking> bookingHistory;
-    private Set<Hotel> hotels;
+    private final Set<Booking> bookingHistory;
+    private final Set<Hotel> hotels;
 
     public User(String username, String password) {
         this.username = username;
@@ -34,6 +34,14 @@ public class User {
         return Collections.unmodifiableSet(hotels);
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,5 +53,10 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(username);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User with username (%s) and password (%s)", this.getUsername(), this.getPassword());
     }
 }

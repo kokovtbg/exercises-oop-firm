@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Room {
     private final long id;
@@ -80,5 +81,12 @@ public class Room {
     @Override
     public int hashCode() {
         return Objects.hash(number, hotel);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Hotel name: %s, Type: %s, Price: %.2f, Amenities: %s",
+                this.getHotel().getName(), this.getType(), this.getPrice(),
+                this.getAmenities().stream().map(Amenity::getName).collect(Collectors.joining(", ")));
     }
 }

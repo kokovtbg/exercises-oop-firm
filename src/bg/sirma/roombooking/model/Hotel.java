@@ -47,4 +47,9 @@ public class Hotel {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Hotel with name %s", this.getName());
+    }
 }

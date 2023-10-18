@@ -12,5 +12,5 @@ public interface HotelService {
 
     Hotel[] getAllFromFile() throws IOException, HotelNotFoundException;
 
-    void createHotel(User currentUser, String hotelName) throws IOException, UserNotFoundException;
+    Hotel createHotel(User currentUser, String hotelName) throws IOException, UserNotFoundException;
 }
