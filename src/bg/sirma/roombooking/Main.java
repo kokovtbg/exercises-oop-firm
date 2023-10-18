@@ -13,6 +13,7 @@ import bg.sirma.roombooking.service.impl.UserServiceImpl;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -49,22 +50,23 @@ public class Main {
                         }
                         case "CreateHotel" -> {
                             String hotelName = commandData[1];
-                            System.out.println(hotelService.createHotel(currentUser, hotelName));
+                            System.out.println(hotelService.createHotel(currentUser, hotelName) + " successfully created!!!");
                         }
                         case "Register" -> {
                             String username = commandData[1];
                             String password = commandData[2];
-                            System.out.println(userService.register(username, password) + " successfully created");
+                            System.out.println(userService.register(username, password) + " successfully created!!!");
                         }
                         case "Login" -> {
                             String username = commandData[1];
                             String password = commandData[2];
                             currentUser = userService.login(username, password);
-                            System.out.printf("Logged in successfully with %s%n", username);
+                            System.out.printf("Logged in successfully with (%s)%n", username);
                         }
                     }
                 } catch (RoomFileNotFoundException | HotelNotFoundException | UserNotOwnerException |
-                         RoomTypeNotFoundException | UserNotFoundException | UserExistException e) {
+                         RoomTypeNotFoundException | UserNotFoundException | UserExistException |
+                         HotelExistException e) {
                     System.out.println(e.getMessage());
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Must contain more parameters");

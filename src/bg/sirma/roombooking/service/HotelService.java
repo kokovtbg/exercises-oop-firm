@@ -1,5 +1,6 @@
 package bg.sirma.roombooking.service;
 
+import bg.sirma.roombooking.exception.HotelExistException;
 import bg.sirma.roombooking.exception.HotelNotFoundException;
 import bg.sirma.roombooking.exception.UserNotFoundException;
 import bg.sirma.roombooking.model.Hotel;
@@ -12,5 +13,5 @@ public interface HotelService {
 
     Hotel[] getAllFromFile() throws IOException, HotelNotFoundException;
 
-    Hotel createHotel(User currentUser, String hotelName) throws IOException, UserNotFoundException;
+    Hotel createHotel(User currentUser, String hotelName) throws IOException, UserNotFoundException, HotelExistException;
 }

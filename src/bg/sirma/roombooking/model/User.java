@@ -42,6 +42,10 @@ public class User {
         this.password = password;
     }
 
+    public void addHotel(Hotel hotel) {
+        this.hotels.add(hotel);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
