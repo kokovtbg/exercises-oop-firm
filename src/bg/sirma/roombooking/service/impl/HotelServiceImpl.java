@@ -26,7 +26,7 @@ import java.util.List;
 public class HotelServiceImpl implements HotelService {
     private static final String basePath = "src/bg/sirma/roombooking/resources/json/savedFiles/";
     private static final String savedHotelsPath = "hotels.json";
-    private static final String usersPath = "users.json";
+//    private static final String usersPath = "users.json";
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .setPrettyPrinting()
@@ -59,6 +59,10 @@ public class HotelServiceImpl implements HotelService {
         Hotel[] hotels = new Hotel[0];
         try (Reader reader = Files.newBufferedReader(Path.of(basePath + savedHotelsPath))) {
             hotels = gson.fromJson(reader, Hotel[].class);
+            if (hotels == null) {
+                hotels = new Hotel[0];
+            }
+
             String nameHotelFromDB = Arrays.stream(hotels)
                     .map(Hotel::getName)
                     .filter(e -> e.equals(hotelName))
@@ -91,16 +95,16 @@ public class HotelServiceImpl implements HotelService {
         gson.toJson(newHotels, writer);
         writer.close();
 
-        Reader reader = Files.newBufferedReader(Path.of(basePath + usersPath));
-        User[] users = gson.fromJson(reader, User[].class);
-        reader.close();
-
-        Arrays.stream(users)
-                .filter(u -> u.equals(currentUser))
-                .findFirst().ifPresent(user -> user.addHotel(hotel));
-        writer = Files.newBufferedWriter(Path.of(basePath + usersPath));
-        gson.toJson(users, writer);
-        writer.close();
+//        Reader reader = Files.newBufferedReader(Path.of(basePath + usersPath));
+//        User[] users = gson.fromJson(reader, User[].class);
+//        reader.close();
+//
+//        Arrays.stream(users)
+//                .filter(u -> u.equals(currentUser))
+//                .findFirst().ifPresent(user -> user.addHotel(hotel));
+//        writer = Files.newBufferedWriter(Path.of(basePath + usersPath));
+//        gson.toJson(users, writer);
+//        writer.close();
 
         return hotel;
     }

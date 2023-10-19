@@ -8,14 +8,14 @@ import java.util.Set;
 public class User {
     private String username;
     private String password;
-    private final Set<Booking> bookingHistory;
-    private final Set<Hotel> hotels;
+//    private final Set<Booking> bookingHistory;
+//    private final Set<Hotel> hotels;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.bookingHistory = new LinkedHashSet<>();
-        this.hotels = new LinkedHashSet<>();
+//        this.bookingHistory = new LinkedHashSet<>();
+//        this.hotels = new LinkedHashSet<>();
     }
 
     public String getUsername() {
@@ -26,13 +26,13 @@ public class User {
         return password;
     }
 
-    public Set<Booking> getBookingHistory() {
-        return Collections.unmodifiableSet(bookingHistory);
-    }
-
-    public Set<Hotel> getHotels() {
-        return Collections.unmodifiableSet(hotels);
-    }
+//    public Set<Booking> getBookingHistory() {
+//        return Collections.unmodifiableSet(bookingHistory);
+//    }
+//
+//    public Set<Hotel> getHotels() {
+//        return Collections.unmodifiableSet(hotels);
+//    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -42,9 +42,9 @@ public class User {
         this.password = password;
     }
 
-    public void addHotel(Hotel hotel) {
-        this.hotels.add(hotel);
-    }
+//    public void addHotel(Hotel hotel) {
+//        this.hotels.add(hotel);
+//    }
 
     @Override
     public boolean equals(Object o) {

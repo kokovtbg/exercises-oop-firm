@@ -6,13 +6,13 @@ public class Hotel {
     private final long id;
     private String name;
     private User owner;
-    private final Set<Room> rooms;
+//    private final Set<Room> rooms;
 
     public Hotel(long id, String name, User owner) {
         this.id = id;
         this.name = name;
         this.owner = owner;
-        this.rooms = new LinkedHashSet<>();
+//        this.rooms = new LinkedHashSet<>();
     }
 
     public long getId() {
@@ -27,13 +27,13 @@ public class Hotel {
         return owner;
     }
 
-    public Set<Room> getRooms() {
-        return Collections.unmodifiableSet(rooms);
-    }
-
-    public void addRoom(Room room) {
-        this.rooms.add(room);
-    }
+//    public Set<Room> getRooms() {
+//        return Collections.unmodifiableSet(rooms);
+//    }
+//
+//    public void addRoom(Room room) {
+//        this.rooms.add(room);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -50,6 +50,6 @@ public class Hotel {
 
     @Override
     public String toString() {
-        return String.format("Hotel with name %s", this.getName());
+        return String.format("Hotel with name (%s)", this.getName());
     }
 }

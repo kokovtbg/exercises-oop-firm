@@ -1,26 +1,27 @@
 package bg.sirma.roombooking;
 
 import bg.sirma.roombooking.exception.*;
-import bg.sirma.roombooking.model.Amenity;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.model.User;
+import bg.sirma.roombooking.service.BookingService;
 import bg.sirma.roombooking.service.HotelService;
 import bg.sirma.roombooking.service.RoomService;
 import bg.sirma.roombooking.service.UserService;
+import bg.sirma.roombooking.service.impl.BookingServiceImpl;
 import bg.sirma.roombooking.service.impl.HotelServiceImpl;
 import bg.sirma.roombooking.service.impl.RoomServiceImpl;
 import bg.sirma.roombooking.service.impl.UserServiceImpl;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.security.MessageDigest;
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class Main {
     private static final RoomService roomService = new RoomServiceImpl();
     private static final HotelService hotelService = new HotelServiceImpl();
     private static final UserService userService = new UserServiceImpl();
+    private static final BookingService bookingService = new BookingServiceImpl();
     private static User currentUser = null;
 
     public static void main(String[] args) {
@@ -46,7 +47,13 @@ public class Main {
                             if (commandData.length > 6) {
                                 amenities = Arrays.stream(commandData[6].split("\\s*,\\s*")).toArray(String[]::new);
                             }
-                            System.out.println(roomService.createRoom(currentUser, number, type, price, cancellationFee, hotelName, amenities));
+                            System.out.println(roomService.createRoom(currentUser,
+                                    number,
+                                    type,
+                                    price,
+                                    cancellationFee,
+                                    hotelName,
+                                    amenities) + " successfully created");
                         }
                         case "CreateHotel" -> {
                             String hotelName = commandData[1];
@@ -63,13 +70,23 @@ public class Main {
                             currentUser = userService.login(username, password);
                             System.out.printf("Logged in successfully with (%s)%n", username);
                         }
+                        case "Book" -> {
+                            LocalDate startDate = LocalDate.parse(commandData[1]);
+                            LocalDate endDate = LocalDate.parse(commandData[2]);
+                            int roomNumber = Integer.parseInt(commandData[3]);
+                            String hotelName = commandData[4];
+                            System.out.println(bookingService.createBooking(currentUser, startDate, endDate, roomNumber, hotelName)
+                                    + " successfully booked!!!");
+                        }
                     }
                 } catch (RoomFileNotFoundException | HotelNotFoundException | UserNotOwnerException |
-                         RoomTypeNotFoundException | UserNotFoundException | UserExistException |
-                         HotelExistException e) {
+                         RoomTypeNotFoundException | UserNotFoundException | UserExistException | HotelExistException |
+                         RoomNotFoundException e) {
                     System.out.println(e.getMessage());
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Must contain more parameters");
+                } catch (NumberFormatException e) {
+                    System.out.println("Something went wrong!!! Type (ListCommands)");
                 }
 
                 line = reader.readLine();

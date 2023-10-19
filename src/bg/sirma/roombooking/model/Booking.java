@@ -7,6 +7,7 @@ public class Booking {
     private final long id;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean isCancelled;
     private User booker;
     private Room room;
 
@@ -21,6 +22,31 @@ public class Booking {
     public long getId() {
         return id;
     }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
+    public User getBooker() {
+        return booker;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void cancel() {
+        this.isCancelled = true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,4 +60,9 @@ public class Booking {
         return Objects.hash(startDate, endDate, booker, room);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Booking{startDate: (%s), endDate: (%s), room: (%s)}",
+                this.getStartDate(), this.getEndDate(), this.getRoom());
+    }
 }

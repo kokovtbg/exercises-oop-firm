@@ -1,9 +1,6 @@
 package bg.sirma.roombooking.service;
 
-import bg.sirma.roombooking.exception.HotelNotFoundException;
-import bg.sirma.roombooking.exception.RoomFileNotFoundException;
-import bg.sirma.roombooking.exception.RoomTypeNotFoundException;
-import bg.sirma.roombooking.exception.UserNotOwnerException;
+import bg.sirma.roombooking.exception.*;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.model.User;
 
@@ -21,4 +18,6 @@ public interface RoomService {
                     BigDecimal cancellationFee,
                     String hotelName,
                     String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException;
+
+    Room getByNumberAndHotelName(int roomNumber, String hotelName) throws RoomNotFoundException;
 }

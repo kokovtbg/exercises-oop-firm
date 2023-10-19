@@ -85,8 +85,8 @@ public class Room {
 
     @Override
     public String toString() {
-        return String.format("Hotel name: %s, Type: %s, Price: %.2f, Amenities: %s",
-                this.getHotel().getName(), this.getType(), this.getPrice(),
+        return String.format("Hotel name: %s, Number: %d, Type: %s, Price: %.2f, Amenities: %s",
+                this.getHotel().getName(), this.getNumber(), this.getType().getName(), this.getPrice(),
                 this.getAmenities().stream().map(Amenity::getName).collect(Collectors.joining(", ")));
     }
 }
