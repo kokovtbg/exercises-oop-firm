@@ -3,7 +3,7 @@
     "id": 1,
     "startDate": "2023-10-23",
     "endDate": "2023-10-30",
-    "isCancelled": false,
+    "isCancelled": true,
     "booker": {
       "username": "ivan",
       "password": "1234"
@@ -24,7 +24,6 @@
       ],
       "price": 20.0,
       "cancellationFee": 10.0,
-      "isBooked": false,
       "hotel": {
         "id": 1,
         "name": "Neva",

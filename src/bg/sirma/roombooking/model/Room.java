@@ -14,7 +14,6 @@ public class Room {
     private final Set<Amenity> amenities;
     private BigDecimal price;
     private BigDecimal cancellationFee;
-    private boolean isBooked;
     private final Hotel hotel;
 
     public Room(long id,
@@ -22,14 +21,12 @@ public class Room {
                 RoomType type,
                 BigDecimal price,
                 BigDecimal cancellationFee,
-                boolean isBooked,
                 Hotel hotel) {
         this.id = id;
         this.number = number;
         this.type = type;
         this.price = price;
         this.cancellationFee = cancellationFee;
-        this.isBooked = isBooked;
         this.hotel = hotel;
         this.amenities = new LinkedHashSet<>();
     }
@@ -52,10 +49,6 @@ public class Room {
 
     public BigDecimal getCancellationFee() {
         return cancellationFee;
-    }
-
-    public boolean isBooked() {
-        return isBooked;
     }
 
     public Set<Amenity> getAmenities() {

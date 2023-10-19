@@ -15,15 +15,12 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class RoomServiceImpl implements RoomService {
     private static final String basePath = "src/bg/sirma/roombooking/resources/json/savedFiles/";
     private static final String roomsPath = "rooms.json";
-    private static final String hotelsPath = "hotels.json";
+    private static final String bookingsPath = "bookings.json";
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .setPrettyPrinting()
@@ -33,26 +30,13 @@ public class RoomServiceImpl implements RoomService {
     private static final AmenityService amenityService = new AmenityServiceImpl();
 
     @Override
-    public Room[] viewFreeRooms() throws IOException, RoomFileNotFoundException {
-        try(BufferedReader reader = new BufferedReader(new FileReader(basePath + roomsPath))) {
-            Room[] rooms = gson.fromJson(reader, Room[].class);
-            return Arrays.stream(rooms)
-                    .filter(r -> !r.isBooked())
-                    .sorted(Comparator.comparing(r -> r.getHotel().getName()))
-                    .toArray(Room[]::new);
-        } catch (FileNotFoundException e) {
-            throw new RoomFileNotFoundException("No rooms! Must first create one!");
-        }
-    }
-
-    @Override
     public Room createRoom(User currentUser,
                            int number,
                            String type,
                            BigDecimal price,
                            BigDecimal cancellationFee,
                            String hotelName,
-                           String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException {
+                           String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException, RoomExistException {
         Hotel hotel = hotelService.getByName(hotelName);
         if (!currentUser.equals(hotel.getOwner())) {
             throw new UserNotOwnerException(String.format("You are not owner of hotel with name %s", hotelName));
@@ -87,7 +71,13 @@ public class RoomServiceImpl implements RoomService {
             lastRoomId++;
         }
 
-        Room room = new Room(lastRoomId, number, roomTypeInDB, price, cancellationFee, false, hotel);
+        if (Arrays.stream(rooms)
+                .filter(r -> r.getNumber() == number && r.getHotel().getName().equals(hotelName))
+                .toList().size() > 0) {
+            throw new RoomExistException(String.format("Room with number (%d) in Hotel (%s) already exist", number, hotelName));
+        }
+
+        Room room = new Room(lastRoomId, number, roomTypeInDB, price, cancellationFee, hotel);
         Amenity[] amenitiesFromFile = amenityService.getAllFromFile();
         Arrays.stream(amenitiesFromFile)
                 .filter(amenity -> Arrays.stream(amenities).toList().contains(amenity.getName()))
@@ -124,4 +114,48 @@ public class RoomServiceImpl implements RoomService {
 
         return room;
     }
+
+    @Override
+    public Room[] viewFreeRooms(LocalDate startDate, LocalDate endDate) throws DatesNotValidException, RoomFileNotFoundException {
+        if (startDate.isAfter(endDate) || startDate.isBefore(LocalDate.now()) || endDate.isBefore(LocalDate.now())) {
+            throw new DatesNotValidException("Dates must be valid");
+        }
+
+        try (Reader reader = Files.newBufferedReader(Path.of(basePath + bookingsPath))) {
+            Booking[] bookings = gson.fromJson(reader, Booking[].class);
+            Set<Room> roomSet = new LinkedHashSet<>();
+            Arrays.stream(bookings).map(Booking::getRoom).forEach(roomSet::add);
+            Room[] roomsFromBookings = Arrays.stream(bookings)
+                    .filter(b -> b.isCancelled() ||
+                            (b.getStartDate().isAfter(startDate) && b.getEndDate().isAfter(endDate)) ||
+                            (b.getStartDate().isBefore(startDate) && b.getEndDate().isBefore(endDate)))
+                    .map(Booking::getRoom)
+                    .toArray(Room[]::new);
+            Room[] roomsFromDB = getAllRooms();
+            roomsFromDB = Arrays.stream(roomsFromDB)
+                    .filter(r -> !roomSet.stream().toList().contains(r))
+                    .toArray(Room[]::new);
+            Set<Room> newRoomSet = new LinkedHashSet<>();
+            newRoomSet.addAll(List.of(roomsFromBookings));
+            newRoomSet.addAll(List.of(roomsFromDB));
+//            Set<Room> roomSet = new LinkedHashSet<>();
+//            roomSet.addAll(List.of(roomsFromBookings));
+//            roomSet.addAll(List.of(roomsFromDB));
+            return newRoomSet.toArray(Room[]::new);
+        } catch (IOException ignored) {
+
+        }
+
+        return new Room[0];
+    }
+
+    private Room[] getAllRooms() {
+        try (Reader reader = Files.newBufferedReader(Path.of(basePath + roomsPath))) {
+            return gson.fromJson(reader, Room[].class);
+        } catch (IOException ignored) {
+
+        }
+        return new Room[0];
+    }
+
 }

@@ -62,7 +62,7 @@ public class Booking {
 
     @Override
     public String toString() {
-        return String.format("Booking{startDate: (%s), endDate: (%s), room: (%s)}",
-                this.getStartDate(), this.getEndDate(), this.getRoom());
+        return String.format("Booking{id: (%s)startDate: (%s), endDate: (%s), room: (%s)}",
+                this.getId(), this.getStartDate(), this.getEndDate(), this.getRoom());
     }
 }

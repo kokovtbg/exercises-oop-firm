@@ -6,10 +6,10 @@ import bg.sirma.roombooking.model.User;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RoomService {
-    Room[] viewFreeRooms() throws IOException, RoomFileNotFoundException;
 
     Room createRoom(User currentUser,
                     int number,
@@ -17,7 +17,9 @@ public interface RoomService {
                     BigDecimal price,
                     BigDecimal cancellationFee,
                     String hotelName,
-                    String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException;
+                    String... amenities) throws IOException, HotelNotFoundException, UserNotOwnerException, RoomTypeNotFoundException, RoomExistException;
 
     Room getByNumberAndHotelName(int roomNumber, String hotelName) throws RoomNotFoundException;
+
+    Room[] viewFreeRooms(LocalDate startDate, LocalDate endDate) throws DatesNotValidException, RoomFileNotFoundException;
 }

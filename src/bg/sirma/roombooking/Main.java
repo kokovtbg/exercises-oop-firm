@@ -1,6 +1,7 @@
 package bg.sirma.roombooking;
 
 import bg.sirma.roombooking.exception.*;
+import bg.sirma.roombooking.model.Booking;
 import bg.sirma.roombooking.model.Room;
 import bg.sirma.roombooking.model.User;
 import bg.sirma.roombooking.service.BookingService;
@@ -15,7 +16,9 @@ import bg.sirma.roombooking.service.impl.UserServiceImpl;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+
 
 public class Main {
     private static final RoomService roomService = new RoomServiceImpl();
@@ -33,9 +36,15 @@ public class Main {
                 try {
                     switch (command) {
                         case "ViewFreeRooms" -> {
-                            Room[] rooms = roomService.viewFreeRooms();
-                            Arrays.stream(rooms)
-                                    .forEach(System.out::println);
+                            LocalDate startDate = LocalDate.parse(commandData[1]);
+                            LocalDate endDate = LocalDate.parse(commandData[2]);
+                            Room[] rooms = roomService.viewFreeRooms(startDate, endDate);
+                            if (rooms.length > 0) {
+                                Arrays.stream(rooms).forEach(System.out::println);
+                            } else {
+                                System.out.println("There are no free rooms");
+                            }
+
                         }
                         case "CreateRoom" -> {
                             int number = Integer.parseInt(commandData[1]);
@@ -78,14 +87,26 @@ public class Main {
                             System.out.println(bookingService.createBooking(currentUser, startDate, endDate, roomNumber, hotelName)
                                     + " successfully booked!!!");
                         }
+                        case "ReportBooking" -> {
+                            Arrays.stream(bookingService.reportBookings(currentUser)).forEach(System.out::println);
+                        }
+                        case "ReportCancellation" -> {
+                            Arrays.stream(bookingService.reportCancelledBookings(currentUser)).forEach(System.out::println);
+                        }
+                        case "CancelBooking" -> {
+                            int id = Integer.parseInt(commandData[1]);
+                            bookingService.cancelBooking(currentUser, id);
+                            System.out.printf("Successfully cancelled Booking with id (%d)%n", id);
+                        }
                     }
-                } catch (RoomFileNotFoundException | HotelNotFoundException | UserNotOwnerException |
-                         RoomTypeNotFoundException | UserNotFoundException | UserExistException | HotelExistException |
-                         RoomNotFoundException e) {
+                } catch (HotelNotFoundException | UserNotOwnerException | RoomTypeNotFoundException |
+                         UserNotFoundException | UserExistException | HotelExistException | RoomNotFoundException |
+                         DatesNotValidException | RoomFileNotFoundException | RoomExistException |
+                         BookingNotFoundException e) {
                     System.out.println(e.getMessage());
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Must contain more parameters");
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | DateTimeParseException e) {
                     System.out.println("Something went wrong!!! Type (ListCommands)");
                 }
 

@@ -15,7 +15,28 @@
     ],
     "price": 20.0,
     "cancellationFee": 10.0,
-    "isBooked": false,
+    "hotel": {
+      "id": 1,
+      "name": "Neva",
+      "owner": {
+        "username": "ivan",
+        "password": "1234"
+      }
+    }
+  },
+  {
+    "id": 2,
+    "number": 101,
+    "type": {
+      "name": "Single"
+    },
+    "amenities": [
+      {
+        "name": "VC"
+      }
+    ],
+    "price": 30.0,
+    "cancellationFee": 20.0,
     "hotel": {
       "id": 1,
       "name": "Neva",
